@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% block title %}Conflict Management — Home{% endblock %}
+
+{% block extra_styles %}
+.hero {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+}
+
+.hero-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    font-weight: 300;
+    letter-spacing: 8px;
+    text-align: center;
+    line-height: 1.05;
+    color: #fff;
+    text-shadow: 0 0 80px rgba(180, 80, 255, 0.5), 0 0 20px rgba(100, 50, 255, 0.3);
+    margin-bottom: 0.4em;
+    animation: fadeInDown 1.2s ease both;
+}
+
+.hero-heading span {
+    display: block;
+    background: linear-gradient(90deg, #c77dff, #7b2fff, #d44aff, #3a6fff);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 5s linear infinite, fadeInDown 1.2s ease both;
+}
+
+.hero-subtitle {
+    font-size: 1rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 5rem;
+    animation: fadeInUp 1.4s ease both;
+}
+
+.widgets-row {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 1.6s ease both;
+}
+
+.widget {
+    width: 260px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(.2,.8,.3,1.2), box-shadow 0.35s ease, border-color 0.35s;
+    text-decoration: none;
+    display: block;
+    position: relative;
+    overflow: hidden;
+}
+
+.widget::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(180,80,255,0.1), rgba(60,80,255,0.05));
+    opacity: 0;
+    transition: opacity 0.35s;
+    border-radius: 20px;
+}
+
+.widget:hover::before { opacity: 1; }
+
+.widget:hover {
+    transform: translateY(-12px) scale(1.03);
+    box-shadow: 0 30px 60px rgba(120, 40, 255, 0.35), 0 0 0 1px rgba(200, 100, 255, 0.4);
+    border-color: rgba(200, 100, 255, 0.5);
+}
+
+.widget-icon {
+    font-size: 3.2rem;
+    margin-bottom: 1.2rem;
+    display: block;
+    filter: drop-shadow(0 0 12px rgba(180, 80, 255, 0.6));
+    transition: transform 0.3s;
+}
+
+.widget:hover .widget-icon {
+    transform: scale(1.15) rotate(-5deg);
+}
+
+.widget-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.9rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: #fff;
+    margin-bottom: 0.6rem;
+}
+
+.widget-desc {
+    font-size: 0.82rem;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    text-transform: uppercase;
+}
+
+.author {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 2.5rem;
+    font-size: 0.78rem;
+    letter-spacing: 2.5px;
+    color: rgba(200, 160, 255, 0.5);
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.particles {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: rgba(180, 80, 255, 0.6);
+    animation: float linear infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 0% center; }
+    100% { background-position: 300% center; }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    from { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.6; }
+    to { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+}
+{% endblock %}
+
+{% block body %}
+<div class="particles" id="particles"></div>
+<section class="hero">
+    <h1 class="hero-heading"><span>Conflict Management</span></h1>
+    <p class="hero-subtitle">Understanding · Resolving · Growing</p>
+    <div class="widgets-row">
+        <a href="/written" class="widget glass">
+            <span class="widget-icon">✍️</span>
+            <div class="widget-title">Written</div>
+            <p class="widget-desc">In-depth essay on conflict theory & resolution</p>
+        </a>
+        <a href="/visual" class="widget glass">
+            <span class="widget-icon">🎨</span>
+            <div class="widget-title">Visual</div>
+            <p class="widget-desc">Illustrated concepts & frameworks</p>
+        </a>
+        <a href="/audio" class="widget glass">
+            <span class="widget-icon">🎧</span>
+            <div class="widget-title">Audio</div>
+            <p class="widget-desc">Listen to guided explanations</p>
+        </a>
+    </div>
+</section>
+
+<div class="author">Peehu Gupta &nbsp;·&nbsp; 25BAI0056</div>
+
+<script>
+const container = document.getElementById('particles');
+for (let i = 0; i < 35; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+        left: ${Math.random()*100}%;
+        width: ${Math.random()*3+1}px;
+        height: ${Math.random()*3+1}px;
+        animation-duration: ${Math.random()*15+8}s;
+        animation-delay: ${Math.random()*10}s;
+        opacity: ${Math.random()*0.5+0.2};
+        background: hsl(${Math.random()*60+260},80%,70%);
+    `;
+    container.appendChild(p);
+}
+</script>
+{% endblock %}

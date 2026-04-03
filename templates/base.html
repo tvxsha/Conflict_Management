@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Conflict Management{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+
+        :root {
+            --purple: #7b2fff;
+            --pink: #d44aff;
+            --blue: #3a6fff;
+            --glass: rgba(20, 10, 40, 0.55);
+            --glass-border: rgba(180, 100, 255, 0.25);
+            --text: #e8d8ff;
+            --text-dim: rgba(200, 170, 255, 0.7);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            background: #050010;
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .bg-fixed {
+            position: fixed;
+            inset: 0;
+            background: url('/static/images/bg.jpg') center/cover no-repeat;
+            z-index: 0;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(5,0,20,0.65) 0%, rgba(10,0,30,0.5) 50%, rgba(5,0,20,0.75) 100%);
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(18px) saturate(1.5);
+            -webkit-backdrop-filter: blur(18px) saturate(1.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 3rem;
+            background: rgba(10, 0, 30, 0.6);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav .nav-brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            text-decoration: none;
+        }
+
+        nav .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav .nav-links a:hover { color: var(--pink); }
+
+        /* ── Custom Cursor ── */
+        #cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            transition: transform 0.08s ease, opacity 0.3s;
+        }
+
+        #cursor-ring {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--pink);
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 12px rgba(212,74,255,0.7), inset 0 0 8px rgba(212,74,255,0.1);
+            transition: width 0.25s cubic-bezier(.2,.8,.3,1.2),
+                        height 0.25s cubic-bezier(.2,.8,.3,1.2),
+                        border-color 0.3s,
+                        box-shadow 0.3s,
+                        opacity 0.3s;
+        }
+
+        /* Colour states */
+        #cursor-ring.on-btn {
+            width: 64px; height: 64px;
+            border-color: #ff6af0;
+            box-shadow: 0 0 28px rgba(255,106,240,0.9), inset 0 0 18px rgba(255,106,240,0.2);
+        }
+        #cursor-ring.on-nav {
+            width: 44px; height: 44px;
+            border-color: #3a6fff;
+            box-shadow: 0 0 18px rgba(58,111,255,0.8), inset 0 0 10px rgba(58,111,255,0.15);
+        }
+        #cursor-ring.on-link {
+            width: 56px; height: 56px;
+            border-color: #d44aff;
+            box-shadow: 0 0 22px rgba(212,74,255,0.9), inset 0 0 14px rgba(212,74,255,0.2);
+        }
+        #cursor-ring.on-glass {
+            width: 48px; height: 48px;
+            border-color: #7b2fff;
+            box-shadow: 0 0 20px rgba(123,47,255,0.8), inset 0 0 12px rgba(123,47,255,0.15);
+        }
+
+        #cursor-dot.clicking {
+            transform: translate(-50%, -50%) scale(2.5);
+        }
+
+        {% block extra_styles %}{% endblock %}
+    </style>
+</head>
+<body>
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <div class="bg-fixed"></div>
+    <div class="bg-overlay"></div>
+    <div class="content">
+        <nav>
+            <a href="/" class="nav-brand">✦ CONFLICT MANAGEMENT</a>
+            <div class="nav-links">
+                <a href="/written">Written</a>
+                <a href="/visual">Visual</a>
+                <a href="/audio">Audio</a>
+            </div>
+        </nav>
+        {% block body %}{% endblock %}
+    </div>
+
+    <script>
+    (function () {
+        const dot  = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mx = -100, my = -100, rx = -100, ry = -100;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            dot.style.left = mx + 'px';
+            dot.style.top  = my + 'px';
+
+            const el = document.elementFromPoint(mx, my);
+            ring.className = '';
+            if (el) {
+                if      (el.closest('button, .play-btn, .widget')) ring.classList.add('on-btn');
+                else if (el.closest('nav'))                         ring.classList.add('on-nav');
+                else if (el.closest('a, .back-link'))               ring.classList.add('on-link');
+                else if (el.closest('.glass'))                      ring.classList.add('on-glass');
+            }
+        });
+
+        (function animateRing() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) * 0.12;
+            ring.style.left = rx + 'px';
+            ring.style.top  = ry + 'px';
+            requestAnimationFrame(animateRing);
+        })();
+
+        document.addEventListener('mousedown', () => dot.classList.add('clicking'));
+        document.addEventListener('mouseup',   () => dot.classList.remove('clicking'));
+        document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
+        document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
+    })();
+    </script>
+</body>
+</html>
